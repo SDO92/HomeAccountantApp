@@ -45,8 +45,8 @@ class HomeAccountantRepo : IHomeAccountantRepo {
     }
 
     override fun getHomes(): LiveData<List<Home>> {
-        var dbModels = homeDao.getHomes()
-        var x = homeDao.getHomesWithDevices();
+        var dbModels = homeDao.getHomesLiveData()
+        var x = homeDao.getHomesWithDevicesLiveData();
 
         //<LiveData<Map<HomeDbModel,List<HomeDeviceDbModel>>>, List<Home>>
         var r : LiveData<List<Home>> =
@@ -62,12 +62,12 @@ class HomeAccountantRepo : IHomeAccountantRepo {
     }
 
     override fun getHome(id: UUID): LiveData<Home?> {
-        val dbModel = homeDao.getHome(id)
+        val dbModel = homeDao.getHomeLiveData(id)
         return if (dbModel?.value != null) MutableLiveData<Home?>(mapTo(dbModel.value!!)) else MutableLiveData<Home?>(null)
     }
 
     override fun getHome(homeAddress: HomeAddress): LiveData<Home?> {
-        val dbModel = homeDao.getHome(homeAddress.Address)
+        val dbModel = homeDao.getHomeLiveData(homeAddress.Address)
         return if (dbModel?.value != null) MutableLiveData<Home?>(mapTo(dbModel.value!!)) else MutableLiveData<Home?>(null)
     }
 
@@ -98,7 +98,8 @@ class HomeAccountantRepo : IHomeAccountantRepo {
 
     override fun addDevicesToHome(homeAddress: HomeAddress, devices: List<Device>) {
         executor.execute {
-            val dbHome = homeDao.getHome(homeAddress.Address).value
+            var x = homeDao.getHomesWithDevicesLiveData2();
+            val dbHome = homeDao.getHome(homeAddress.Address)
             val isExists = dbHome != null
             if (!isExists)
                 return@execute
@@ -134,7 +135,7 @@ private fun mapTo(deviceDbModel : HomeDeviceDbModel) : Device{
     return Device(deviceDbModel.DeviceName)
 }
 
-private fun mapTo(x : Map<HomeDbModel,List<HomeDeviceDbModel>?>) : List<Home>{
+private fun mapTo(x : Map<HomeDbModel,List<HomeDeviceDbModel?>?>) : List<Home>{
 
     var res: MutableList<Home> = mutableListOf()
 
@@ -143,6 +144,8 @@ private fun mapTo(x : Map<HomeDbModel,List<HomeDeviceDbModel>?>) : List<Home>{
         var devices = x[key]
         if (devices != null){
         for (device in devices){
+            if (device == null)
+                continue
             var dev = mapTo(device)
             home.addDevice(dev)
         }

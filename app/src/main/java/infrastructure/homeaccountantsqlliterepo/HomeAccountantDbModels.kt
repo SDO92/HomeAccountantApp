@@ -34,5 +34,5 @@ internal data class HomeDevicesDbModel(
         parentColumn = "HOME_ROW_GUID",
         entityColumn = "HOME_ROW_GUID"
     )
-    val devices: List<HomeDeviceDbModel>?
+    val devices: List<HomeDeviceDbModel>
 )

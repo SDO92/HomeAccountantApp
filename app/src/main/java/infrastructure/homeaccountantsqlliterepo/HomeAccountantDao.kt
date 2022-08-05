@@ -8,16 +8,28 @@ import java.util.*
 internal interface HomeAccountantDao {
 
     @Query("SELECT * FROM $DB_HOME_TABLE_NAME")
-    fun getHomes(): LiveData<List<HomeDbModel>>
+    fun getHomesLiveData(): LiveData<List<HomeDbModel>>
 
     @Query("SELECT * FROM $DB_HOME_TABLE_NAME H left join $DB_HOME_DEVICES_TABLE_NAME D on H.HOME_ROW_GUID = D.HOME_ROW_GUID")
-    fun getHomesWithDevices(): LiveData<Map<HomeDbModel,List<HomeDeviceDbModel>?>>
+    fun getHomesWithDevicesLiveData(): LiveData<Map<HomeDbModel,List<HomeDeviceDbModel?>>>
+
+    @Query("SELECT * FROM $DB_HOME_TABLE_NAME ")
+    fun getHomesWithDevicesLiveData2(): List<HomeDevicesDbModel>
+
 
     @Query("SELECT * FROM $DB_HOME_TABLE_NAME WHERE HOME_ROW_GUID = (:id)")
-    fun getHome(id: UUID): LiveData<HomeDbModel?>
+    fun getHomeLiveData(id: UUID): LiveData<HomeDbModel?>
 
     @Query("SELECT * FROM $DB_HOME_TABLE_NAME WHERE HOME_ADDRESS = (:homeAddress)")
-    fun getHome(homeAddress: String): LiveData<HomeDbModel?>
+    fun getHomeLiveData(homeAddress: String): LiveData<HomeDbModel?>
+
+
+    @Query("SELECT * FROM $DB_HOME_TABLE_NAME WHERE HOME_ROW_GUID = (:id)")
+    fun getHome(id: UUID): HomeDbModel?
+
+    @Query("SELECT * FROM $DB_HOME_TABLE_NAME WHERE HOME_ADDRESS = (:homeAddress)")
+    fun getHome(homeAddress: String): HomeDbModel?
+
 
     @Query("SELECT COUNT(1) FROM $DB_HOME_TABLE_NAME WHERE HOME_ROW_GUID = (:id)")
     fun isHomeExists(id: UUID): Int
