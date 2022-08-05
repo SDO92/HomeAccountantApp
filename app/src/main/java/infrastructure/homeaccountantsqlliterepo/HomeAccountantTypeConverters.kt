@@ -21,7 +21,7 @@ internal class HomeAccountantTypeConverters {
         }
 
     @TypeConverter
-    fun toUUID(uuid: String?): UUID? = UUID.fromString(uuid)
+    fun toUUID(uuid: String?): UUID? = if (uuid == null) null else UUID.fromString(uuid)
 
     @TypeConverter
     fun fromUUID(uuid: UUID?): String? = uuid?.toString()

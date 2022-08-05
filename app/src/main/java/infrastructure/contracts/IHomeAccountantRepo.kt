@@ -16,7 +16,13 @@ interface IHomeAccountantRepo {
 
     fun getDevices(homeAddress: HomeAddress): LiveData<List<Device>>
 
-    fun saveHome(homeAddress: HomeAddress)
 
-    fun addDevice(home: Home, device: Device)
+
+
+    fun createHome(homeAddress: HomeAddress)
+
+    fun createHome(home: Home)
+
+    fun addDevicesToHome(homeAddress: HomeAddress, devices: List<Device>)
+
 }

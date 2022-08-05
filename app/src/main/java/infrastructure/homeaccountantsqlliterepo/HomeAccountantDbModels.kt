@@ -13,7 +13,7 @@ internal data class
 HomeDbModel(
     @PrimaryKey @ColumnInfo(name = "HOME_ADDRESS") val Address: String,
     @ColumnInfo(name = "HOME_ROW_GUID") val rowId: UUID = UUID.randomUUID(),
-    @ColumnInfo(name = "ROW_DATE") var rowDate: Date = Date()
+    @ColumnInfo(name = "ROW_DATE") val rowDate: Date = Date()
 )
 
 @Entity(
@@ -25,14 +25,14 @@ HomeDeviceDbModel(
     @PrimaryKey @ColumnInfo(name = "DEVICE_NAME") val DeviceName: String,
     @ColumnInfo(name = "HOME_ROW_GUID") val homeRowId: UUID,
     @ColumnInfo(name = "DEVICE_ROW_GUID") val deviceRowId: UUID = UUID.randomUUID(),
-    @ColumnInfo(name = "ROW_DATE") var rowDate: Date = Date()
+    @ColumnInfo(name = "ROW_DATE") val rowDate: Date = Date()
 )
 
 internal data class HomeDevicesDbModel(
     @Embedded val home: HomeDbModel,
     @Relation(
         parentColumn = "HOME_ROW_GUID",
-        entityColumn = "DEVICE_ROW_GUID"
+        entityColumn = "HOME_ROW_GUID"
     )
-    val devices: List<HomeDeviceDbModel>
+    val devices: List<HomeDeviceDbModel>?
 )
