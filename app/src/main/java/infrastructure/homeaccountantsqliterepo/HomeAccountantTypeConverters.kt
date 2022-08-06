@@ -1,4 +1,4 @@
-package infrastructure.homeaccountantsqlliterepo
+package infrastructure.homeaccountantsqliterepo
 
 import androidx.room.TypeConverter
 import java.text.SimpleDateFormat

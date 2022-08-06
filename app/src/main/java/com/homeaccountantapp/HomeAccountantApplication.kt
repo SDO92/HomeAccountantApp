@@ -1,7 +1,7 @@
 package com.homeaccountantapp
 
 import android.app.Application
-import infrastructure.homeaccountantsqlliterepo.HomeAccountantRepo
+import infrastructure.homeaccountantsqliterepo.HomeAccountantRepo
 
 class HomeAccountantApplication : Application()
 {

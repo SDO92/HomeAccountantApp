@@ -1,34 +1,33 @@
-package infrastructure.homeaccountantsqlliterepo
+package infrastructure.homeaccountantsqliterepo
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import domain.home.Home
 import java.util.*
 
 @Dao
 internal interface HomeAccountantDao {
 
-    @Query("SELECT * FROM $DB_HOME_TABLE_NAME")
-    fun getHomesLiveData(): LiveData<List<HomeDbModel>>
-
-    @Query("SELECT * FROM $DB_HOME_TABLE_NAME H left join $DB_HOME_DEVICES_TABLE_NAME D on H.HOME_ROW_GUID = D.HOME_ROW_GUID")
-    fun getHomesWithDevicesLiveData(): LiveData<Map<HomeDbModel,List<HomeDeviceDbModel?>>>
 
     @Query("SELECT * FROM $DB_HOME_TABLE_NAME ")
-    fun getHomesWithDevicesLiveData2(): List<HomeDevicesDbModel>
+    fun getHomesWithDevicesLiveData(): LiveData<List<HomeDevicesDbModel>>
+
+    @Query("SELECT * FROM $DB_HOME_TABLE_NAME ")
+    fun getHomesWithDevices(): List<HomeDevicesDbModel>
 
 
     @Query("SELECT * FROM $DB_HOME_TABLE_NAME WHERE HOME_ROW_GUID = (:id)")
-    fun getHomeLiveData(id: UUID): LiveData<HomeDbModel?>
+    fun getHomeLiveData(id: UUID): LiveData<HomeDevicesDbModel?>
 
     @Query("SELECT * FROM $DB_HOME_TABLE_NAME WHERE HOME_ADDRESS = (:homeAddress)")
-    fun getHomeLiveData(homeAddress: String): LiveData<HomeDbModel?>
+    fun getHomeLiveData(homeAddress: String): LiveData<HomeDevicesDbModel?>
 
 
     @Query("SELECT * FROM $DB_HOME_TABLE_NAME WHERE HOME_ROW_GUID = (:id)")
-    fun getHome(id: UUID): HomeDbModel?
+    fun getHome(id: UUID): HomeDevicesDbModel?
 
     @Query("SELECT * FROM $DB_HOME_TABLE_NAME WHERE HOME_ADDRESS = (:homeAddress)")
-    fun getHome(homeAddress: String): HomeDbModel?
+    fun getHome(homeAddress: String): HomeDevicesDbModel?
 
 
     @Query("SELECT COUNT(1) FROM $DB_HOME_TABLE_NAME WHERE HOME_ROW_GUID = (:id)")
@@ -36,6 +35,7 @@ internal interface HomeAccountantDao {
 
     @Query("SELECT COUNT(1) FROM $DB_HOME_TABLE_NAME WHERE HOME_ADDRESS = (:homeAddress)")
     fun isHomeExists(homeAddress: String): Int
+
 
     @Query("SELECT * FROM $DB_HOME_DEVICES_TABLE_NAME WHERE HOME_ROW_GUID = (:homeRowId) and DEVICE_NAME = (:deviceName)")
     fun getDevice(homeRowId: UUID, deviceName: String): HomeDeviceDbModel?
@@ -48,7 +48,6 @@ internal interface HomeAccountantDao {
 
     @Query("SELECT DEVICE_ROW_GUID FROM $DB_HOME_DEVICES_TABLE_NAME WHERE HOME_ROW_GUID = (:homeRowId) and DEVICE_NAME = (:deviceName)")
     fun getDeviceGuid(homeRowId: UUID, deviceName: String): UUID?
-
 
     @Insert
     fun addNewHome(dbModel: HomeDbModel)

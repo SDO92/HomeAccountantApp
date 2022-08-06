@@ -4,7 +4,7 @@ data class HomeAddress(val Address: String){
 
     companion object {
 
-        fun CreateRandomAddress(addressPrefix: String ): HomeAddress{
+        fun createRandomAddress(addressPrefix: String ): HomeAddress{
             return HomeAddress(addressPrefix + (0..999).random() )
         }
 

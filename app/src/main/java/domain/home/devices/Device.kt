@@ -17,4 +17,12 @@ class Device(val Name: String) {
     override fun equals(other: Any?): Boolean =
         (other is Device) && other.Name == Name
 
+    companion object {
+
+        fun createRandomDevice(deviceNamePrefix: String ): Device {
+            return Device(deviceNamePrefix + (0..999).random() )
+        }
+
+    }
+
 }

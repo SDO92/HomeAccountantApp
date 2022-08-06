@@ -8,13 +8,13 @@ import java.util.*
 
 interface IHomeAccountantRepo {
 
-    fun getHomes(): LiveData<List<Home>>
+    fun getHomesLiveData(): LiveData<List<Home>>
 
-    fun getHome(id: UUID): LiveData<Home?>
+    fun getHomeLiveData(id: UUID): LiveData<Home?>
 
-    fun getHome(homeAddress: HomeAddress): LiveData<Home?>
+    fun getHomeLiveData(homeAddress: HomeAddress): LiveData<Home?>
 
-    fun getDevices(homeAddress: HomeAddress): LiveData<List<Device>>
+    fun getDevicesLiveData(homeAddress: HomeAddress): LiveData<List<Device>>
 
 
 

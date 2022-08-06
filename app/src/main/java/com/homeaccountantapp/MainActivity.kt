@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.lifecycle.Observer
 import domain.home.HomeAddress
 import domain.home.devices.Device
-import infrastructure.homeaccountantsqlliterepo.HomeAccountantRepo
+import infrastructure.homeaccountantsqliterepo.HomeAccountantRepo
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,20 +16,32 @@ class MainActivity : AppCompatActivity() {
 
         val crimeRepository =  HomeAccountantRepo.get()
 
-        var addr_1 = HomeAddress.CreateRandomAddress("MY_PREFIX")
-        var addr_2 = HomeAddress.CreateRandomAddress("MY_PREFIX_1")
-        var addr_3 = HomeAddress.CreateRandomAddress("MY_PREFIX_2")
+        var addr_1 = HomeAddress.createRandomAddress("MY_PREFIX")
+        var addr_2 = HomeAddress.createRandomAddress("MY_PREFIX_1")
+        var addr_3 = HomeAddress.createRandomAddress("MY_PREFIX_2")
 
 
         crimeRepository.createHome(addr_1)
         crimeRepository.createHome(addr_2)
         crimeRepository.createHome(addr_3)
 
-        crimeRepository.addDevicesToHome(addr_1, listOf(Device("Dev_1"), Device("DEV_2"), Device("DEV_3")))
-        crimeRepository.addDevicesToHome(addr_2, listOf(Device("Dev_4"), Device("DEV_5"), Device("DEV_6")))
-        crimeRepository.addDevicesToHome(addr_3, listOf(Device("Dev_7"), Device("DEV_8"), Device("DEV_9")))
+        crimeRepository.addDevicesToHome(addr_1,
+            listOf<Device>(
+                Device.createRandomDevice("Dev_1"),
+                Device.createRandomDevice("DEV_2"),
+                Device.createRandomDevice("DEV_3")))
+        crimeRepository.addDevicesToHome(addr_2,
+            listOf(
+                Device.createRandomDevice("Dev_4"),
+                Device.createRandomDevice("DEV_5"),
+                Device.createRandomDevice("DEV_6")))
+        crimeRepository.addDevicesToHome(addr_3,
+            listOf(
+                Device.createRandomDevice("Dev_7"),
+                Device.createRandomDevice("DEV_8"),
+                Device.createRandomDevice("DEV_9")))
 
-        var homeList = crimeRepository.getHomes()
+        var homeList = crimeRepository.getHomesLiveData()
 
         homeList.observe(
             this,
