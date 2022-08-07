@@ -44,7 +44,7 @@ class HomeAccountantRepo : IHomeAccountantRepo {
         )
 
         builder.setQueryCallback(RoomDatabase.QueryCallback { sqlQuery, bindArgs ->
-            Log.i(DATABASE_NAME, "\r\nSQL Query: $sqlQuery \r\n SQL Args: $bindArgs")
+            Log.i("DB_TAG", "\r\nSQL Query: $sqlQuery \r\n SQL Args: $bindArgs")
         }, Executors.newSingleThreadExecutor())
 
         database = builder.build()
@@ -78,8 +78,9 @@ class HomeAccountantRepo : IHomeAccountantRepo {
         var homeGuid: UUID? =
             homeDao.getHomeGuid(homeAddress.Address) ?: return MutableLiveData(listOf())
 
-        var dbModels = homeDao.getDevices(homeGuid!!)
-        return MutableLiveData(dbModels.map { mapTo(it) });
+        var dbModels: List<HomeDevicesDbModel> = homeDao.getDevices(homeGuid!!)
+        var res = dbModels.flatMap { x -> x.devices.map { y -> mapTo(y) } }
+        return MutableLiveData(res);
     }
 
     override fun createHome(homeAddress: HomeAddress) {
@@ -107,7 +108,12 @@ class HomeAccountantRepo : IHomeAccountantRepo {
             if (!isExists)
                 return@execute
             for (item in devices)
-                homeDao.addNewHomeDevice(mapTo(dbHome!!.home.homeRowId, item))
+            {
+                var x = mapTo(item)
+                var y = OneHomeManyDevicesDbModel(dbHome!!.home.homeRowId, x.deviceRowId)
+                homeDao.addDeviceToHome(y,x)
+            }
+
         }
     }
 
@@ -134,6 +140,10 @@ internal fun mapTo(homeGuid: UUID, device: Device): HomeDeviceDbModel {
     return HomeDeviceDbModel(device.Name, homeGuid)
 }
 
+internal fun mapTo(device: Device): HomeDeviceDbModel {
+    return HomeDeviceDbModel(device.Name)
+}
+
 internal fun mapTo(deviceDbModel: HomeDeviceDbModel): Device {
     return Device(deviceDbModel.DeviceName)
 }
@@ -150,3 +160,4 @@ internal fun mapTo(x: HomeDevicesDbModel): Home {
 
     return res
 }
+
