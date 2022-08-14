@@ -9,8 +9,8 @@ import java.util.*
     tableName = HomeDbModel.TABLE_NAME,
     indices = [Index(value = [HomeDbModel.HOME_ADDRESS], unique = true)])
 internal data class HomeDbModel(
+    @PrimaryKey @ColumnInfo(name = HomeDbModel.HOME_ROW_GUID) val homeRowId: UUID,
     @ColumnInfo(name = HomeDbModel.HOME_ADDRESS) val Address: String,
-    @PrimaryKey  @ColumnInfo(name = HomeDbModel.HOME_ROW_GUID) val homeRowId: UUID = UUID.randomUUID(),
     @ColumnInfo(name = HomeDbModel.HOME_ROW_DATE) val rowDate: Date = Date()
 ){
     companion object{
@@ -29,8 +29,8 @@ internal data class HomeDbModel(
 )
 internal data class
 HomeDeviceDbModel(
-    @ColumnInfo(name = HomeDeviceDbModel.HOME_DEVICE_NAME) val DeviceName: String,
     @PrimaryKey @ColumnInfo(name = HomeDeviceDbModel.HOME_DEVICE_ROW_GUID) val deviceRowId: UUID = UUID.randomUUID(),
+    @ColumnInfo(name = HomeDeviceDbModel.HOME_DEVICE_NAME) val DeviceName: String,
     @ColumnInfo(name = HomeDeviceDbModel.HOME_DEVICE_ROW_DATE) val rowDate: Date = Date()
 ){
     companion object{
@@ -122,5 +122,16 @@ internal data class HomeDeviceValueDbmodel(
         const val ROW_DATE = "ROW_DATE"
     }
 }
+
+internal data class HomeWithDevicesWithValues(
+    @Embedded val home: HomeDbModel,
+    @Relation(
+        entity = HomeDeviceDbModel::class,
+        parentColumn = OneDeviceManyValuesDbModel.DEVICE_ROW_GUID,
+        entityColumn = OneDeviceManyValuesDbModel.VALUE_ROW_GUID
+    )
+    val devices: List<HomeDeviceValuesDbModel>
+)
+{}
 
 /*******************************************************************************/

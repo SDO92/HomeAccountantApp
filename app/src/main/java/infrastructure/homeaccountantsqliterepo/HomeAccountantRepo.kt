@@ -9,7 +9,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import domain.home.Home
 import domain.home.HomeAddress
+import domain.home.HomeId
 import domain.home.devices.Device
+import domain.home.devices.DeviceId
 import infrastructure.contracts.IHomeAccountantRepo
 import java.util.*
 import java.util.concurrent.Executors
@@ -83,20 +85,11 @@ class HomeAccountantRepo : IHomeAccountantRepo {
         return MutableLiveData(res);
     }
 
-    override fun createHome(homeAddress: HomeAddress) {
-        executor.execute {
-            val isExists = homeDao.isHomeExists(homeAddress.Address) > 0
-            if (!isExists) {
-                homeDao.addNewHome(mapTo(homeAddress))
-            }
-        }
-    }
-
     override fun createHome(home: Home) {
         executor.execute {
             val isExists = homeDao.isHomeExists(home.Address.Address) > 0
             if (!isExists) {
-                homeDao.addNewHome(mapTo(home.Address))
+                homeDao.addNewHome(mapTo(home))
             }
         }
     }
@@ -120,32 +113,20 @@ class HomeAccountantRepo : IHomeAccountantRepo {
 
 }
 
-internal fun mapTo(homeAddress: HomeAddress): HomeDbModel {
-    return HomeDbModel(Address = homeAddress.Address)
-}
-
 internal fun mapTo(home: Home): HomeDbModel {
-    return HomeDbModel(Address = home.Address.Address)
+    return HomeDbModel(Address = home.Address.Address, homeRowId = home.Id.toUUID() )
 }
 
 internal fun mapTo(homeDbModel: HomeDbModel): Home {
-    return Home(Address = HomeAddress(homeDbModel.Address))
-}
-
-internal fun mapTo(home: Home, dbModel: HomeDbModel): HomeDbModel {
-    return HomeDbModel(Address = home.Address.Address, homeRowId = dbModel.homeRowId)
-}
-
-internal fun mapTo(homeGuid: UUID, device: Device): HomeDeviceDbModel {
-    return HomeDeviceDbModel(device.Name, homeGuid)
+    return Home(Id = HomeId(homeDbModel.homeRowId), Address = HomeAddress(homeDbModel.Address))
 }
 
 internal fun mapTo(device: Device): HomeDeviceDbModel {
-    return HomeDeviceDbModel(device.Name)
+    return HomeDeviceDbModel(deviceRowId = device.Id.Id, DeviceName = device.Name )
 }
 
 internal fun mapTo(deviceDbModel: HomeDeviceDbModel): Device {
-    return Device(deviceDbModel.DeviceName)
+    return Device(DeviceId(deviceDbModel.deviceRowId), deviceDbModel.DeviceName)
 }
 
 internal fun mapTo(x: HomeDevicesDbModel): Home {

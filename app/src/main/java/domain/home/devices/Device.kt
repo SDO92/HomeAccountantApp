@@ -1,6 +1,6 @@
 package domain.home.devices
 
-class Device(val Name: String) {
+class Device(val Id: DeviceId, val Name: String) {
 
     private val _deviceValues: MutableList<DeviceValue> = mutableListOf()
 
@@ -10,17 +10,10 @@ class Device(val Name: String) {
         _deviceValues.add(deviceValue)
     }
 
-    override fun hashCode(): Int = Name.hashCode()
-
-    override fun toString(): String = Name.toString()
-
-    override fun equals(other: Any?): Boolean =
-        (other is Device) && other.Name == Name
-
     companion object {
 
         fun createRandomDevice(deviceNamePrefix: String ): Device {
-            return Device(deviceNamePrefix + (0..999).random() )
+            return Device(DeviceId.create(), deviceNamePrefix + (0..999).random() )
         }
 
     }

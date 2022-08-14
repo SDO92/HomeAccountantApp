@@ -2,7 +2,7 @@ package domain.home
 
 import domain.home.devices.Device
 
-class Home(val Address: HomeAddress) {
+class Home(val Id : HomeId, val Address: HomeAddress) {
 
     private val _homeDevices: MutableList<Device> = mutableListOf()
 
@@ -13,11 +13,12 @@ class Home(val Address: HomeAddress) {
         _homeDevices.add(device)
     }
 
-    override fun hashCode(): Int = Address.hashCode()
+    companion object{
 
-    override fun toString(): String = "$Address ${_homeDevices.size}"
+        fun createNew(address: HomeAddress) : Home {
+                return Home(HomeId.Create(),address )
+        }
 
-    override fun equals(other: Any?): Boolean =
-        (other is Home) && other.Address == Address
+    }
 
 }

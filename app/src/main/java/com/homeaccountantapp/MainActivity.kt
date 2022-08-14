@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
+import domain.home.Home
 import domain.home.HomeAddress
 import domain.home.devices.Device
 import infrastructure.homeaccountantsqliterepo.HomeAccountantRepo
@@ -21,9 +22,9 @@ class MainActivity : AppCompatActivity() {
         var addr_3 = HomeAddress.createRandomAddress("MY_PREFIX_2")
 
 
-        crimeRepository.createHome(addr_1)
-        crimeRepository.createHome(addr_2)
-        crimeRepository.createHome(addr_3)
+        crimeRepository.createHome(Home.createNew(addr_1))
+        crimeRepository.createHome(Home.createNew(addr_2))
+        crimeRepository.createHome(Home.createNew(addr_3))
 
         crimeRepository.addDevicesToHome(addr_1,
             listOf<Device>(
