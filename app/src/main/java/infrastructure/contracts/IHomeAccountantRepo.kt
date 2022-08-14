@@ -16,9 +16,6 @@ interface IHomeAccountantRepo {
 
     fun getDevicesLiveData(homeAddress: HomeAddress): LiveData<List<Device>>
 
-
-
-
     fun createHome(homeAddress: HomeAddress)
 
     fun createHome(home: Home)

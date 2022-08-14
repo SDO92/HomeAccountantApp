@@ -8,6 +8,8 @@ import androidx.room.TypeConverters
     HomeDbModel::class,
     HomeDeviceDbModel::class,
     OneHomeManyDevicesDbModel::class,
+    HomeDeviceValueDbmodel::class,
+    OneDeviceManyValuesDbModel::class,
     ], version = 1)
 @TypeConverters(HomeAccountantTypeConverters::class)
 internal abstract class HomeAccountantDatabase : RoomDatabase() {

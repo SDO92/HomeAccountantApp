@@ -7,54 +7,53 @@ import java.util.*
 @Dao
 internal interface HomeAccountantDao {
 
-
     @Transaction
-    @Query("SELECT * FROM ${TableHome.HOME_TABLE_NAME} ")
+    @Query("SELECT * FROM ${HomeDbModel.TABLE_NAME} ")
     fun getHomesWithDevices(): List<HomeDevicesDbModel>
 
     @Transaction
-    @Query("SELECT * FROM ${TableHome.HOME_TABLE_NAME} ")
+    @Query("SELECT * FROM ${HomeDbModel.TABLE_NAME} ")
     fun getHomesWithDevicesLiveData(): LiveData<List<HomeDevicesDbModel>>
 
     @Transaction
-    @Query("SELECT * FROM  ${TableHome.HOME_TABLE_NAME} WHERE ${TableHome.HOME_ROW_GUID} = (:id)")
+    @Query("SELECT * FROM  ${HomeDbModel.TABLE_NAME} WHERE ${HomeDbModel.HOME_ROW_GUID} = (:id)")
     fun getHome(id: UUID): HomeDevicesDbModel?
 
     @Transaction
-    @Query("SELECT * FROM  ${TableHome.HOME_TABLE_NAME} WHERE ${TableHome.HOME_ROW_GUID} = (:id)")
+    @Query("SELECT * FROM  ${HomeDbModel.TABLE_NAME} WHERE ${HomeDbModel.HOME_ROW_GUID} = (:id)")
     fun getHomeLiveData(id: UUID): LiveData<HomeDevicesDbModel?>
 
     @Transaction
-    @Query("SELECT * FROM ${TableHome.HOME_TABLE_NAME} WHERE ${TableHome.HOME_ADDRESS} = (:homeAddress)")
+    @Query("SELECT * FROM ${HomeDbModel.TABLE_NAME} WHERE ${HomeDbModel.HOME_ADDRESS} = (:homeAddress)")
     fun getHome(homeAddress: String): HomeDevicesDbModel?
 
     @Transaction
-    @Query("SELECT * FROM ${TableHome.HOME_TABLE_NAME} WHERE ${TableHome.HOME_ADDRESS} = (:homeAddress)")
+    @Query("SELECT * FROM ${HomeDbModel.TABLE_NAME} WHERE ${HomeDbModel.HOME_ADDRESS} = (:homeAddress)")
     fun getHomeLiveData(homeAddress: String): LiveData<HomeDevicesDbModel?>
 
 
-    @Query("SELECT COUNT(1) FROM ${TableHome.HOME_TABLE_NAME} WHERE ${TableHome.HOME_ROW_GUID} = (:id)")
+    @Query("SELECT COUNT(1) FROM ${HomeDbModel.TABLE_NAME} WHERE ${HomeDbModel.HOME_ROW_GUID} = (:id)")
     fun isHomeExists(id: UUID): Int
 
-    @Query("SELECT COUNT(1) FROM ${TableHome.HOME_TABLE_NAME} WHERE ${TableHome.HOME_ADDRESS} = (:homeAddress)")
+    @Query("SELECT COUNT(1) FROM ${HomeDbModel.TABLE_NAME} WHERE ${HomeDbModel.HOME_ADDRESS} = (:homeAddress)")
     fun isHomeExists(homeAddress: String): Int
 
 
-    @Query("SELECT ${TableHome.HOME_ROW_GUID} FROM ${TableHome.HOME_TABLE_NAME} WHERE ${TableHome.HOME_ADDRESS} = (:homeAddress)")
+    @Query("SELECT ${HomeDbModel.HOME_ROW_GUID} FROM ${HomeDbModel.TABLE_NAME} WHERE ${HomeDbModel.HOME_ADDRESS} = (:homeAddress)")
     fun getHomeGuid(homeAddress: String): UUID?
 
-    @Query("SELECT D.${TableHomeDevice.HOME_DEVICE_ROW_GUID} FROM  " +
-            "${TableHome.HOME_TABLE_NAME} H " +
-            "join ${TableHomeDevices.HOME_DEVICES_TABLE_NAME} HD on H.${TableHome.HOME_ROW_GUID} = HD.${TableHomeDevices.HOME_ROW_GUID} " +
-            "join ${TableHomeDevice.HOME_DEVICE_TABLE_NAME} D on HD.${TableHomeDevices.DEVICE_ROW_GUID} = D.${TableHomeDevice.HOME_DEVICE_ROW_GUID} " +
-            " where H.${TableHome.HOME_ROW_GUID} = (:homeRowId) and  D.${TableHomeDevice.HOME_DEVICE_NAME} = (:deviceName)"
+    @Query("SELECT D.${HomeDeviceDbModel.HOME_DEVICE_ROW_GUID} FROM  " +
+            "${HomeDbModel.TABLE_NAME} H " +
+            "join ${OneHomeManyDevicesDbModel.TABLE_NAME} HD on H.${HomeDbModel.HOME_ROW_GUID} = HD.${OneHomeManyDevicesDbModel.HOME_ROW_GUID} " +
+            "join ${HomeDeviceDbModel.TABLE_NAME} D on HD.${OneHomeManyDevicesDbModel.DEVICE_ROW_GUID} = D.${HomeDeviceDbModel.HOME_DEVICE_ROW_GUID} " +
+            " where H.${HomeDbModel.HOME_ROW_GUID} = (:homeRowId) and  D.${HomeDeviceDbModel.HOME_DEVICE_NAME} = (:deviceName)"
     )
     fun getDeviceGuid(homeRowId: UUID, deviceName: String): UUID?
 
-    @Query("SELECT * FROM ${TableHome.HOME_TABLE_NAME} WHERE ${TableHome.HOME_ROW_GUID} = (:homeRowId)")
+    @Query("SELECT * FROM ${HomeDbModel.TABLE_NAME} WHERE ${HomeDbModel.HOME_ROW_GUID} = (:homeRowId)")
     fun getDevices(homeRowId: UUID): List<HomeDevicesDbModel>
 
-    @Query("SELECT * FROM ${TableHome.HOME_TABLE_NAME} WHERE ${TableHome.HOME_ROW_GUID} = (:homeRowId)")
+    @Query("SELECT * FROM ${HomeDbModel.TABLE_NAME} WHERE ${HomeDbModel.HOME_ROW_GUID} = (:homeRowId)")
     fun getDevicesLiveData(homeRowId: UUID): LiveData<List<HomeDevicesDbModel>>
 
 
