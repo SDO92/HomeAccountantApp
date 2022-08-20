@@ -1,5 +1,7 @@
 package domain.home.devices
 
+import domain.home.devices.values.DeviceValue
+
 class Device(val Id: DeviceId, val Name: String) {
 
     private val _deviceValues: MutableList<DeviceValue> = mutableListOf()

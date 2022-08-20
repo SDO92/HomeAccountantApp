@@ -12,6 +12,7 @@ import domain.home.HomeAddress
 import domain.home.HomeId
 import domain.home.devices.Device
 import domain.home.devices.DeviceId
+import domain.home.devices.values.DeviceValue
 import infrastructure.contracts.IHomeAccountantRepo
 import java.util.*
 import java.util.concurrent.Executors
@@ -22,6 +23,7 @@ class HomeAccountantRepo : IHomeAccountantRepo {
 
     private val database: HomeAccountantDatabase
     private val homeDao: HomeAccountantDao
+    private val homeRawDaw: HomeAccountantDaoRaw
     private val executor = Executors.newSingleThreadExecutor()
 
     companion object {
@@ -51,6 +53,7 @@ class HomeAccountantRepo : IHomeAccountantRepo {
 
         database = builder.build()
         homeDao = database.homeDao()
+        homeRawDaw = database.homeRawDao()
     }
 
     override fun getHomesLiveData(): LiveData<List<Home>> {
@@ -60,6 +63,14 @@ class HomeAccountantRepo : IHomeAccountantRepo {
                 it.map { y -> mapTo(y) }
             }
         return r;
+    }
+
+    override fun getHomeLiveData(homeId: HomeId): LiveData<Home?> {
+        var dbModels = homeRawDaw.getHome(homeId.toUUID())
+
+
+
+        TODO("Not yet implemented")
     }
 
     override fun getHomeLiveData(id: UUID): LiveData<Home?> {
@@ -110,6 +121,11 @@ class HomeAccountantRepo : IHomeAccountantRepo {
         }
     }
 
+    override fun addValueToDecice(device: Device, value: DeviceValue) {
+        executor.execute {
+            homeDao.addValueToDevice(deviceId = device.Id.toUUID(), mapTo(value))
+        }
+    }
 
 }
 
@@ -140,5 +156,9 @@ internal fun mapTo(x: HomeDevicesDbModel): Home {
     }
 
     return res
+}
+
+internal fun mapTo(value: DeviceValue): HomeDeviceValueDbmodel {
+    return HomeDeviceValueDbmodel(valueRowId = value.Id.toUUID(),value = value.Value )
 }
 

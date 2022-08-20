@@ -16,7 +16,7 @@ class Home(val Id : HomeId, val Address: HomeAddress) {
     companion object{
 
         fun createNew(address: HomeAddress) : Home {
-                return Home(HomeId.Create(),address )
+                return Home(HomeId.create(),address )
         }
 
     }

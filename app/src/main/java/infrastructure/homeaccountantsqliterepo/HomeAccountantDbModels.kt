@@ -132,6 +132,6 @@ internal data class HomeWithDevicesWithValues(
     )
     val devices: List<HomeDeviceValuesDbModel>
 )
-{}
+
 
 /*******************************************************************************/

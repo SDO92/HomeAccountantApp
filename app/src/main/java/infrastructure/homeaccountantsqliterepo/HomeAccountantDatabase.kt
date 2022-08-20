@@ -16,4 +16,10 @@ internal abstract class HomeAccountantDatabase : RoomDatabase() {
 
     abstract fun homeDao(): HomeAccountantDao
 
+    abstract fun rawDao(): IHomeAccountantDaoRaw
+
+    fun homeRawDao():HomeAccountantDaoRaw{
+        return HomeAccountantDaoRaw(rawDao())
+    }
+
 }

@@ -8,4 +8,6 @@ data class DeviceId(val Id: UUID){
             return  DeviceId(UUID.randomUUID())
         }
     }
+
+    fun toUUID():UUID = Id
 }

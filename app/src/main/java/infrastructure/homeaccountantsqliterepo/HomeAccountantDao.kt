@@ -57,6 +57,23 @@ internal interface HomeAccountantDao {
     fun getDevicesLiveData(homeRowId: UUID): LiveData<List<HomeDevicesDbModel>>
 
 
+    @Query("SELECT * FROM ${HomeDeviceDbModel.TABLE_NAME} WHERE ${HomeDeviceDbModel.HOME_DEVICE_ROW_GUID} = (:deviceId)")
+    fun getDevicebyId(deviceId: UUID):HomeDeviceValuesDbModel
+
+
+    @Transaction
+    @Insert
+    fun addValueToDevice(deviceId: UUID, value: HomeDeviceValueDbmodel){
+        insertModel(OneDeviceManyValuesDbModel(deviceRowId = deviceId, valueRowId = value.valueRowId))
+        insertModel(value)
+    }
+
+    @Insert
+    fun insertModel(deviceValue: OneDeviceManyValuesDbModel)
+
+    @Insert
+    fun insertModel(model: HomeDeviceValueDbmodel)
+
     @Insert
     fun addNewHome(dbModel: HomeDbModel)
 

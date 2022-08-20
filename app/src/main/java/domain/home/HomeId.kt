@@ -4,7 +4,7 @@ import java.util.*
 
 data class HomeId(val Id: UUID){
     companion object{
-        fun Create(): HomeId{
+        fun create(): HomeId{
             return  HomeId(UUID.randomUUID())
         }
     }
