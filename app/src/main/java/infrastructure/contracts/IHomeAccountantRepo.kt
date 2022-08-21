@@ -14,8 +14,6 @@ interface IHomeAccountantRepo {
 
     fun getHomesLiveData(): LiveData<List<Home>>
 
-    fun getHomeLiveData(id: UUID): LiveData<Home?>
-
     fun getHomeLiveData(homeAddress: HomeAddress): LiveData<Home?>
 
     fun getDevicesLiveData(homeAddress: HomeAddress): LiveData<List<Device>>

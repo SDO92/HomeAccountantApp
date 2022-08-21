@@ -6,6 +6,13 @@ import androidx.room.Embedded
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import domain.home.Home
+import domain.home.HomeAddress
+import domain.home.HomeId
+import domain.home.devices.Device
+import domain.home.devices.DeviceId
+import domain.home.devices.values.DeviceValue
+import domain.home.devices.values.DeviceValueId
 import java.util.*
 
 
@@ -17,13 +24,13 @@ internal interface IHomeAccountantDaoRaw {
 
 internal class HomeAccountantDaoRaw(private val rawDao: IHomeAccountantDaoRaw){
 
-    fun getHome(id: UUID): LiveData<List<FullAggregateRowDbModel>> {
+    fun getHomeLiveData(id: UUID): LiveData<List<FullAggregateRowDbModel>> {
 
-        val sql = "select H.*, D.*, V.* from ${HomeDbModel.TABLE_NAME} H " +
-                "left join ${OneHomeManyDevicesDbModel.TABLE_NAME} HD on HD.${OneHomeManyDevicesDbModel.HOME_ROW_GUID} = H.${HomeDbModel.HOME_ROW_GUID}  " +
-                "left join ${HomeDeviceDbModel.TABLE_NAME} D on D.${HomeDeviceDbModel.HOME_DEVICE_ROW_GUID} = HD.${OneHomeManyDevicesDbModel.DEVICE_ROW_GUID} " +
-                "left join ${OneDeviceManyValuesDbModel.TABLE_NAME} DV on DV.${OneDeviceManyValuesDbModel.DEVICE_ROW_GUID} = D.${HomeDeviceDbModel.HOME_DEVICE_ROW_GUID} " +
-                "left join ${HomeDeviceValueDbmodel.TABLE_NAME} V on V.${HomeDeviceValueDbmodel.VALUE_ROW_GUID} = DV.${OneDeviceManyValuesDbModel.VALUE_ROW_GUID} " +
+        val sql = "select H.*, D.*, V.* from ${HomeDbModel.TABLE_NAME} H " + System.lineSeparator() +
+                "left join ${OneHomeManyDevicesDbModel.TABLE_NAME} HD on HD.${OneHomeManyDevicesDbModel.HOME_ROW_GUID} = H.${HomeDbModel.HOME_ROW_GUID}  " + System.lineSeparator() +
+                "left join ${HomeDeviceDbModel.TABLE_NAME} D on D.${HomeDeviceDbModel.HOME_DEVICE_ROW_GUID} = HD.${OneHomeManyDevicesDbModel.DEVICE_ROW_GUID} " + System.lineSeparator() +
+                "left join ${OneDeviceManyValuesDbModel.TABLE_NAME} DV on DV.${OneDeviceManyValuesDbModel.DEVICE_ROW_GUID} = D.${HomeDeviceDbModel.HOME_DEVICE_ROW_GUID} " + System.lineSeparator() +
+                "left join ${HomeDeviceValueDbmodel.TABLE_NAME} V on V.${HomeDeviceValueDbmodel.VALUE_ROW_GUID} = DV.${OneDeviceManyValuesDbModel.VALUE_ROW_GUID} " + System.lineSeparator() +
                 "where H.${HomeDbModel.HOME_ROW_GUID} = ?";
 
         return rawDao.getHome(query = SimpleSQLiteQuery(sql, arrayOf( id.toString())));
@@ -71,6 +78,26 @@ internal fun mapTo(list: List<FullAggregateRowDbModel>) : Map<HomeDbModel, Map<H
         }
     }
 
+    return res;
+}
+
+internal fun mapTo(list: Map<HomeDbModel, Map<HomeDeviceDbModel, List<HomeDeviceValueDbmodel>>>): List<Home> {
+
+    var res = mutableListOf<Home>()
+
+    for(home in list.keys){
+        var h = Home(Id = HomeId(home.homeRowId), HomeAddress(home.Address))
+        for (device in list[home]?.keys ?: emptySet()){
+            var d = Device(Id = DeviceId(device.deviceRowId), Name = device.DeviceName )
+            h.addDevice(d)
+            for (deviceValue: HomeDeviceValueDbmodel in list[home]?.get(device)!!)
+            {
+                val v = DeviceValue(Id = DeviceValueId(deviceValue.valueRowId), Value = deviceValue.value )
+                d.addValue(v)
+            }
+        }
+        res.add(h)
+    }
     return res;
 }
 

@@ -66,18 +66,13 @@ class HomeAccountantRepo : IHomeAccountantRepo {
     }
 
     override fun getHomeLiveData(homeId: HomeId): LiveData<Home?> {
-        var dbModels = homeRawDaw.getHome(homeId.toUUID())
+        var dbModels: LiveData<List<FullAggregateRowDbModel>> = homeRawDaw.getHomeLiveData(homeId.toUUID())
 
+        var res = Transformations.map(dbModels) {
+            mapTo(mapTo(it)).firstOrNull()
+        }
 
-
-        TODO("Not yet implemented")
-    }
-
-    override fun getHomeLiveData(id: UUID): LiveData<Home?> {
-        val dbModel = homeDao.getHomeLiveData(id)
-        return if (dbModel.value != null) MutableLiveData<Home?>(mapTo(dbModel.value!!)) else MutableLiveData<Home?>(
-            null
-        )
+       return res
     }
 
     override fun getHomeLiveData(homeAddress: HomeAddress): LiveData<Home?> {
